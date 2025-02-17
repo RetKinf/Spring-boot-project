@@ -1,22 +1,19 @@
 package com.example.springbootproject.repository.impl;
 
+import com.example.springbootproject.exception.DataProcessingException;
 import com.example.springbootproject.model.Book;
 import com.example.springbootproject.repository.BookRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
     private final SessionFactory sessionFactory;
-
-    @Autowired
-    public BookRepositoryImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     @Override
     public Book save(Book book) {
@@ -32,7 +29,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Error saving book" + book);
+            throw new DataProcessingException("Error saving book" + book, e);
         } finally {
             if (session != null) {
                 session.close();
@@ -45,7 +42,7 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("SELECT u FROM Book u").getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Can't get all users from DB", e);
+            throw new DataProcessingException("Can't get all users", e);
         }
     }
 }

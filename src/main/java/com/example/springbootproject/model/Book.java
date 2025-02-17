@@ -1,29 +1,30 @@
 package com.example.springbootproject.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 import java.math.BigDecimal;
-import lombok.Data;
 
 @Entity
-@Data
-
+@Getter
+@Setter
+@Table(name = "books")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String author;
     @Column(nullable = false, unique = true)
     private String isbn;
     @Column(nullable = false)
-    @Min(0)
     private BigDecimal price;
     private String description;
     private String coverImage;
